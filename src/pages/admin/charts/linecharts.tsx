@@ -1,6 +1,6 @@
 
-import AdminSidebar from "../../components/admin/admin-sidebar";
-import { LineChart } from "../../components/admin/charts";
+import AdminSidebar from "../../../components/admin/admin-sidebar";
+import { LineChart } from "../../../components/admin/charts";
 
 const months = [
   "January",

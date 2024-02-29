@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/header';
 import Loading from './components/loading';
 
 
@@ -25,17 +26,20 @@ const TransactionManagement = lazy(
 )
 function App() {
   return <Router>
+
+    {/* Header */}
+    <Header/>
     <Suspense fallback={<Loading />}>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/search' element={<Search />} />
 
         {/* admin routes*/}
-          <Route
-          // element={
-          //   <ProtectedRoute isAuthenticated={true} adminRoute={true} isAdmin={true} />
-          // }
-          >
+        <Route
+        // element={
+        //   <ProtectedRoute isAuthenticated={true} adminRoute={true} isAdmin={true} />
+        // }
+        >
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/products" element={<Products />} />
           <Route path="/admin/customers" element={<Customers />} />

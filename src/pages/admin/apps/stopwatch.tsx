@@ -1,5 +1,5 @@
 import {useState,useEffect} from 'react'
-import AdminSidebar from "../../components/admin/admin-sidebar";
+import AdminSidebar from "../../../components/admin/admin-sidebar";
 
 const formatTime = (timeInSeconds: number) => {
     const hours = Math.floor(timeInSeconds / 3600);
