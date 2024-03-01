@@ -1,20 +1,28 @@
-import {Link} from 'react-router-dom';
+import { Link } from "react-router-dom";
+import ProductCard from "../components/product-card";
 const Home = () => {
+  const addToCartHandler = () => {};
   return (
     <div className="home">
-      <section>
-
-      </section>
+      <section></section>
       <h1>
         Latest Products
-        <Link to={"/search"} className="findmore">More</Link>
+        <Link to={"/search"} className="findmore">
+          More
+        </Link>
       </h1>
       <main>
-        
+        <ProductCard
+          productId="jkjj"
+          name="Macbook"
+          price={232223}
+          stock={213}
+          handler={addToCartHandler}
+          photo="https://m.media-amazon.com/images/I/71fMZDz2sEL._AC_UY218_.jpg"
+        />
       </main>
-
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
