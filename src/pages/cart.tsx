@@ -39,14 +39,14 @@ const Cart = () => {
   return (
     <div className="cart">
       <main>
-        {cartItems.map((item,index) => <CartItem/>)}
+        {cartItems.map((item,index) => <CartItem key={index} cartItem={item}/>)}
       </main>
       <aside>
-        <p> Subtotal: Rs{subtotal} </p>
-        <p> Shiping Charges: Rs{shippingCharges} </p>
-        <p> Tax: Rs{tax} </p>
+        <p> Subtotal: Rs {subtotal} </p>
+        <p> Shiping Charges: Rs {shippingCharges} </p>
+        <p> Tax: Rs {tax} </p>
         <p>
-          Discount: <em> - Rs{discount}</em>
+          Discount: <em className="red"> - Rs {discount}</em>
         </p>
         <p>
           <b>Total: Rs{total}</b>
@@ -62,9 +62,10 @@ const Cart = () => {
         {
           couponCode && (isValidCouponCode?( 
           <span className="green"> 
-            Rs{discount} off using the <code>{couponCode}</code>
+            Rs {discount} off using the <code>{couponCode}</code>
           </span>): (<span className="red">Invalid Coupon <VscError/></span>)
           )}
+          
       </aside>
     </div>
   );
