@@ -4,8 +4,10 @@ import Header from './components/header';
 import Loading from './components/loading';
 
 
+
 const Home = lazy(() => import('./pages/home'));
 const Search = lazy(() => import('./pages/search'));
+const Cart = lazy(() => import('./pages/cart'));
 
 //Admin routes 
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
@@ -33,6 +35,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/search' element={<Search />} />
+        <Route path='/cart' element={<Cart />} />
 
         {/* admin routes*/}
         <Route
