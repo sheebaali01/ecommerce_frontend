@@ -3,8 +3,8 @@ import { FaSearch ,FaShoppingBag , FaSignInAlt,FaUser, FaSignOutAlt } from 'reac
 import { useState } from 'react';
 
 const user = {
-    _id:"fff",
-    role:"admin"
+    _id:"",
+    role:""
 }
 const Header = () => {
     const [isOpen , setIsOpen] = useState<boolean>(false);
@@ -13,7 +13,7 @@ const Header = () => {
     }
   return (
     <nav className="header">
-         <Link onClick={() => setIsOpen(false)} to={"/"}>Home</Link>
+         <Link onClick={() => setIsOpen(false)} to={"/"}>HOME</Link>
          <Link onClick={() => setIsOpen(false)} to={"/search"}>{" "} <FaSearch/></Link>
          <Link onClick={() => setIsOpen(false)} to={"/cart"}>{" "} <FaShoppingBag/></Link>
          {
