@@ -19,9 +19,10 @@ const Search = () => {
           </select>
         </div>
 
-        {/* <div>
+        <div>
           <h4>Max Price: {maxPrice || ""}</h4>
           <input
+            style={{padding:0}}
             type="range"
             min={100}
             max={100000}
@@ -37,14 +38,14 @@ const Search = () => {
             onChange={(e) => setCategory(e.target.value)}
           >
             <option value="">ALL</option>
-            {!loadingCategories &&
+            {/* {!loadingCategories &&
               categoriesResponse?.categories.map((i) => (
                 <option key={i} value={i}>
                   {i.toUpperCase()}
                 </option>
-              ))}
+              ))} */}
           </select>
-        </div> */}
+        </div>
       </aside>
       {/* <main>
         <h1>Products</h1>
