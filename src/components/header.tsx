@@ -3,8 +3,8 @@ import { FaSearch ,FaShoppingBag , FaSignInAlt,FaUser, FaSignOutAlt } from 'reac
 import { useState } from 'react';
 
 const user = {
-    _id:"fffff",
-    role:"user"
+    _id:"",
+    role:""
 }
 const Header = () => {
     const [isOpen , setIsOpen] = useState<boolean>(false);
