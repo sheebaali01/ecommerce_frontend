@@ -5,7 +5,7 @@ export type MessageResponse = {
     message: string;
 }
 
-export type UerResponse = {
+export type UserResponse = {
     success: boolean;
     user: User;
 }
