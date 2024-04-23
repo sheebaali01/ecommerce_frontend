@@ -10,6 +10,7 @@ import { userExist, userNotExist } from './redux/reducer/userReducer';
 import { getUser } from './redux/api/userAPI';
 import Loader from './components/admin/loader';
 import ProtectedRoute from './components/protected-route';
+import { UserReducerInitialState } from './types/reducer-types';
 
 const Home = lazy(() => import('./pages/home'));
 const Search = lazy(() => import('./pages/search'));
@@ -51,7 +52,7 @@ function App() {
         console.log("not logged in");
       }
     })
-  })
+  },[])
   return loading ? <Loader/> :(
   
     <Router>

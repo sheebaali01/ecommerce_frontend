@@ -1,11 +1,26 @@
 import {useState} from 'react'
+import { useCategoriesQuery } from '../redux/api/productAPI';
+import { CustomError } from '../types/api-types';
+import toast from 'react-hot-toast';
 
 const Search = () => {
+
+  const {data:categoriesResponse,isLoading:loadingCategories,isError,error} = useCategoriesQuery("");
+
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
   const [maxPrice, setMaxPrice] = useState(100000);
   const [category, setCategory] = useState("");
   const [page, setPage] = useState(1);
+
+  const isPrevPage = page>1;
+  const isNextPage = page<4;
+
+  if(isError) {
+    const err = error as CustomError;
+    toast.error(err.data.message);
+  }
+
   return (
     <div className="product-search-page">
       <aside>
@@ -38,16 +53,16 @@ const Search = () => {
             onChange={(e) => setCategory(e.target.value)}
           >
             <option value="">ALL</option>
-            {/* {!loadingCategories &&
+            {!loadingCategories &&
               categoriesResponse?.categories.map((i) => (
                 <option key={i} value={i}>
                   {i.toUpperCase()}
                 </option>
-              ))} */}
+              ))}
           </select>
         </div>
       </aside>
-      {/* <main>
+      <main>
         <h1>Products</h1>
         <input
           type="text"
@@ -55,7 +70,7 @@ const Search = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-
+{/* 
         {productLoading ? (
           <Skeleton length={10} />
         ) : (
@@ -92,8 +107,8 @@ const Search = () => {
               Next
             </button>
           </article>
-        )}
-      </main> */}
+        )} */}
+      </main>
     </div>
   )
 }

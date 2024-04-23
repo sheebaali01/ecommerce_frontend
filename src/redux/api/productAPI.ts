@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
-import { MessageResponse,UserResponse } from "../../types/api-types";
+import { AllProductsResponse, CategoriesResponse, MessageResponse,SearchProductsRequest,SearchProductsResponse,UserResponse } from "../../types/api-types";
 import { User } from "../../types/types";
 
 export const productAPI = createApi({
@@ -10,9 +10,26 @@ export const productAPI = createApi({
         latestProducts: builder.query<AllProductsResponse,string>({
             query: () => 'latest'
         }),
+        allProducts: builder.query<AllProductsResponse,string>({
+            query: (id) => `admin-products?id=${id}`,
+        }),
+        categories: builder.query<CategoriesResponse,string>({
+            query: () => `categories`,
+        }),
+        searchProducts: builder.query<SearchProductsResponse,SearchProductsRequest>({
+            query: ({price,search,sort,category,page}) => {
+                let base = `all?search=${search}&page=${page}`;
+
+                if(price) base+= `&price=${price}`;
+                if(sort) base+= `&sort=${sort}`;
+                if(category) base+= `&category=${category}`;
+
+                return base;
+            },
+        }),
     }),
 });
 
 
 
-export const {useLatestProductsQuery} = productAPI;
+export const {useLatestProductsQuery,useAllProductsQuery,useCategoriesQuery,useSearchProductsQuery} = productAPI;

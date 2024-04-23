@@ -18,8 +18,7 @@ const Home = () => {
         </Link>
       </h1>
       <main>
-        <Skeleton/>
-      {isLoading?<Loader/>:
+      {isLoading?<Skeleton width="80vw"/>:
           data?.products.map((i) => (
             <ProductCard
               key={i._id}
