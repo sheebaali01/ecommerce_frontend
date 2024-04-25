@@ -1,20 +1,25 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
-import { AllProductsResponse, CategoriesResponse, MessageResponse,SearchProductsRequest,SearchProductsResponse,UserResponse } from "../../types/api-types";
+import { AllProductsResponse, CategoriesResponse, MessageResponse,NewProductRequest,SearchProductsRequest,SearchProductsResponse,UserResponse } from "../../types/api-types";
 import { User } from "../../types/types";
 
 export const productAPI = createApi({
     reducerPath: "productAPI",
     baseQuery: fetchBaseQuery({baseUrl: `${import.meta.env.VITE_SERVER}/api/v1/product/`}),
+    tagTypes:["product"],
     endpoints: (builder) => ({
         latestProducts: builder.query<AllProductsResponse,string>({
-            query: () => 'latest'
+            query: () => 'latest',
+            providesTags:["product"]
         }),
+
         allProducts: builder.query<AllProductsResponse,string>({
             query: (id) => `admin-products?id=${id}`,
+            providesTags:["product"]
         }),
         categories: builder.query<CategoriesResponse,string>({
             query: () => `categories`,
+            providesTags:["product"]
         }),
         searchProducts: builder.query<SearchProductsResponse,SearchProductsRequest>({
             query: ({price,search,sort,category,page}) => {
@@ -26,10 +31,23 @@ export const productAPI = createApi({
 
                 return base;
             },
+            providesTags:["product"]
+        }),
+        productDetails: builder.query<AllProductsResponse,string>({
+            query: (id) => id,
+            providesTags:["product"]
+        }),
+        newProduct: builder.mutation<MessageResponse,NewProductRequest>({
+            query: ({formData,id}) => (
+                {
+                    url:`new?id=${id}`,method: 'POST',body: formData
+                }
+            ),
+            invalidatesTags:["product"]
         }),
     }),
 });
 
 
 
-export const {useLatestProductsQuery,useAllProductsQuery,useCategoriesQuery,useSearchProductsQuery} = productAPI;
+export const {useLatestProductsQuery,useAllProductsQuery,useCategoriesQuery,useSearchProductsQuery,useProductDetailsQuery,useNewProductMutation} = productAPI;

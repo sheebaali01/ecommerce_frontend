@@ -1,7 +1,9 @@
 import {useState} from 'react'
-import { useCategoriesQuery } from '../redux/api/productAPI';
+import { useCategoriesQuery, useSearchProductsQuery } from '../redux/api/productAPI';
 import { CustomError } from '../types/api-types';
 import toast from 'react-hot-toast';
+import { Skeleton } from '../components/loader';
+import ProductCard from '../components/product-card';
 
 const Search = () => {
 
@@ -13,6 +15,8 @@ const Search = () => {
   const [category, setCategory] = useState("");
   const [page, setPage] = useState(1);
 
+  const {isLoading:productLoading,data:searchedData} = useSearchProductsQuery({search,sort,category,page,price:maxPrice})
+
   const isPrevPage = page>1;
   const isNextPage = page<4;
 
@@ -20,7 +24,10 @@ const Search = () => {
     const err = error as CustomError;
     toast.error(err.data.message);
   }
+  const addToCartHandler = () => {
 
+  }
+  console.log("searched data",searchedData)
   return (
     <div className="product-search-page">
       <aside>
@@ -70,7 +77,7 @@ const Search = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-{/* 
+
         {productLoading ? (
           <Skeleton length={10} />
         ) : (
@@ -107,7 +114,7 @@ const Search = () => {
               Next
             </button>
           </article>
-        )} */}
+        )}
       </main>
     </div>
   )

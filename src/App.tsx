@@ -88,7 +88,7 @@ function App() {
         }
         >
           <Route path="/admin/dashboard" element={<Dashboard />} />
-          <Route path="/admin/products" element={<Products />} />
+          <Route path="/admin/product" element={<Products />} />
           <Route path="/admin/customers" element={<Customers />} />
           <Route path="/admin/transaction" element={<Transaction />} />        
         
