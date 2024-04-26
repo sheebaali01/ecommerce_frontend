@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
-import { AllProductsResponse, CategoriesResponse, MessageResponse,NewProductRequest,SearchProductsRequest,SearchProductsResponse,UserResponse } from "../../types/api-types";
+import { AllProductsResponse, CategoriesResponse, DeleteProductRequest, MessageResponse,NewProductRequest,ProductResponse,SearchProductsRequest,SearchProductsResponse,UserResponse } from "../../types/api-types";
 import { User } from "../../types/types";
 
 export const productAPI = createApi({
@@ -33,7 +33,7 @@ export const productAPI = createApi({
             },
             providesTags:["product"]
         }),
-        productDetails: builder.query<AllProductsResponse,string>({
+        productDetails: builder.query<ProductResponse,string>({
             query: (id) => id,
             providesTags:["product"]
         }),
@@ -45,9 +45,28 @@ export const productAPI = createApi({
             ),
             invalidatesTags:["product"]
         }),
+        updateProduct: builder.mutation<MessageResponse,UpdateProductRequest>({
+            query: ({formData,userId,productId}) => (
+                {
+                    url:`${productId}?id=${userId}`,
+                    method: 'PUT',
+                    body: formData
+                }
+            ),
+            invalidatesTags:["product"]
+        }),
+        deleteProduct: builder.mutation<MessageResponse,DeleteProductRequest>({
+            query: ({userId,productId}) => (
+                {
+                    url:`${productId}?id=${userId}`,
+                    method: 'DELETE',
+                }
+            ),
+            invalidatesTags:["product"]
+        }),
     }),
 });
 
 
 
-export const {useLatestProductsQuery,useAllProductsQuery,useCategoriesQuery,useSearchProductsQuery,useProductDetailsQuery,useNewProductMutation} = productAPI;
+export const {useLatestProductsQuery,useAllProductsQuery,useCategoriesQuery,useSearchProductsQuery,useProductDetailsQuery,useNewProductMutation,useUpdateProductMutation,useDeleteProductMutation} = productAPI;

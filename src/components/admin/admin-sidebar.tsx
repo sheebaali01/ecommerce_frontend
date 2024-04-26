@@ -55,7 +55,7 @@ const AdminSidebar = () => {
                         Icon={RiDashboardFill}
                         location = {location}    
                     />                    
-                    <Li url="/admin/products" 
+                    <Li url="/admin/product" 
                         text="Product" 
                         Icon={RiShoppingBag3Fill}
                         location = {location}    
