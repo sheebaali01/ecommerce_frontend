@@ -1,8 +1,14 @@
-import { ReactElement,useCallback,useState } from 'react';
-import AdminSidebar from "../../components/admin/admin-sidebar";
-import TableHOC from '../../components/admin/tableHOC';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Column } from 'react-table';
+import AdminSidebar from "../../components/admin/admin-sidebar";
+import TableHOC from '../../components/admin/tableHOC';
+import { UserReducerInitialState } from '../../types/reducer-types';
+import { useAllOrdersQuery } from '../../redux/api/orderAPI';
+import toast from 'react-hot-toast';
+import { CustomError } from '../../types/api-types';
+import { Skeleton } from '../../components/loader';
 
 interface DataType{
   user: string;
@@ -44,42 +50,38 @@ const columns:Column<DataType>[] =[
 
  }
 ];
-const arr: DataType[] = [
-  {
-    user: "Charas",
-    amount: 4500,
-    discount: 400,
-    quantity: 3,
-    status: <span className="red">Processing</span>,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-  {
-    user: "Xavirors",
-    amount: 6999,
-    discount: 400,
-    status: <span className="green">Shipped</span>,
-    quantity: 6,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-  {
-    user: "Xavirors",
-    amount: 6999,
-    discount: 400,
-    status: <span className="purple">Delivered</span>,
-    quantity: 6,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-];
+
 const Transaction = () => {
+  const { user } = useSelector((state:{userReducer:UserReducerInitialState}) => state.userReducer);
+  const {data,isLoading,isError,error} = useAllOrdersQuery(user?._id!);
+  
   // const [data] = useState<DataType>(arr);
-  const [data] = useState<DataType[]>(arr);
-  const Table = useCallback(
-    TableHOC<DataType>(columns,data,"dashboard-product-box","Transactions",true),[]
-  );
+  const [rows,setRows] = useState<DataType[]>([]);
+
+  if(isError){
+    const err = error as CustomError;
+    toast.error(err.data.message)
+  }
+  const Table = TableHOC<DataType>(columns,rows,"dashboard-product-box","Transactions",rows.length>6)();
+  useEffect(() => {
+    if (data)
+      setRows(
+        data.orders.map((i) => ({
+         user:i.user.name,
+         amount:i.total,
+         discount:i.discount,
+         quantity:i.orderItems.length,
+         status:<span className={i.status === "Processing"?"red":i.status === "Shipped"?"green":"purple"}>{i.status}</span>,
+         action:<Link to={`/admin/transaction/${i._id}`}>Manage</Link>
+        }))
+      );
+  }, [data]);
   return (
     <div className='admin-container'>
         <AdminSidebar/>
-        <main>{Table()}</main>
+        <main>
+          {isLoading?<Skeleton length={20}/>:Table}
+        </main>
     </div>
   )
 }

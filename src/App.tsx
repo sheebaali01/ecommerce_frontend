@@ -12,6 +12,7 @@ import Loader from './components/admin/loader';
 import ProtectedRoute from './components/protected-route';
 import { UserReducerInitialState } from './types/reducer-types';
 
+
 const Home = lazy(() => import('./pages/home'));
 const Search = lazy(() => import('./pages/search'));
 const Cart = lazy(() => import('./pages/cart'));
@@ -19,6 +20,7 @@ const Shipping = lazy(() => import('./pages/shipping'));
 const Login = lazy(() => import('./pages/login'));
 const Orders = lazy(() => import('./pages/orders'));
 const OrderDetails = lazy(() => import('./pages/order-details'));
+const NotFound = lazy(() =>import( './pages/not-found'));
 
 //Admin routes 
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
@@ -106,6 +108,7 @@ function App() {
           <Route path="/admin/product/:id" element={<ProductManagement />} />   
           <Route path="/admin/transaction/:id" element={<TransactionManagement />} />   
         </Route>
+        <Route path="*" element={<NotFound/>}></Route>
       </Routes>
     </Suspense>
     <Toaster position="bottom-center"/>

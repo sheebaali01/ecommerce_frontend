@@ -6,8 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { CartReducerInitialState } from "../types/reducer-types";
 import { CartItem } from "../types/types";
 import toast from "react-hot-toast";
-import { addToCart, calculatePrice, removeCartItem } from "../redux/reducer/cartReducer";
-
+import { addToCart, calculatePrice, discountApplied, removeCartItem } from "../redux/reducer/cartReducer";
+import axios from "axios";
+import { server } from "../redux/store";
 
 const Cart = () => {
 
@@ -32,18 +33,27 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    const timeOutId = setTimeout(() => {
-      if(Math.random() >0.5){
-        setIsValidCouponCode(true);
+    const {token:cancelToken, cancel} = axios.CancelToken.source();
 
-      }
-      else{
+    const timeOutId = setTimeout(() => {
+      axios.get(`${server}/api/v1/payment/discount?coupon=${couponCode}`,{
+        cancelToken
+      }).
+      then((res) => {
+        dispatch(discountApplied(res.data.discount));
+        dispatch(calculatePrice());
+        setIsValidCouponCode(true);
+      }).
+      catch((e) => {
+        dispatch(discountApplied(0));
+        dispatch(calculatePrice());
         setIsValidCouponCode(false);
-      }
+      })
     }, 1000);
 
     return ()=>{
       clearTimeout(timeOutId)
+      cancel();
       setIsValidCouponCode(false);
     }
   },[couponCode]);
@@ -74,7 +84,7 @@ const Cart = () => {
           Discount: <em className="red"> - Rs {discount}</em>
         </p>
         <p>
-          <b>Total: Rs{total}</b>
+          <b>Total: Rs {total}</b>
         </p>
 
         <input
@@ -88,9 +98,8 @@ const Cart = () => {
           couponCode && (isValidCouponCode?( 
           <span className="green"> 
             Rs {discount} off using the <code>{couponCode}</code>
-          </span>): (<span className="red">Invalid Coupon <VscError/></span>)
-          )}
-
+          </span>): (<span className="red">Invalid Coupon <VscError/></span>))
+        }
         {
           cartItems.length > 0 && <Link to="/shipping">Checkout</Link>
         }  

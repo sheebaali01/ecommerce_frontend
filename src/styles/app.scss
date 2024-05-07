@@ -142,7 +142,13 @@ $color3:rgb(0,104,136);
   text-align: center
 }
 
-
+.not-found{
+  height: 80vh;
+  @include flex(column);
+  >svg{
+    font-size: 5rem;
+  }
+}
 
 
 
