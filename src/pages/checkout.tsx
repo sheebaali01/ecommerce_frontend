@@ -7,22 +7,47 @@ import {
 import { loadStripe } from "@stripe/stripe-js";
 import { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useNewOrderMutation } from "../redux/api/orderAPI";
+import { resetCart } from "../redux/reducer/cartReducer";
+import { RootState } from "../redux/store";
+import { NewOrderRequest } from "../types/api-types";
+import { CartReducerInitialState } from "../types/reducer-types";
+import { responseToast } from "../utils/features";
 
-const stripePromise = loadStripe("pk_test_TYooMQauvdEDq54NiTphI7jx");
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY);
 
 const CheckOutForm = () => {
+
+  const { user } = useSelector((state:RootState) => state.userReducer);
+
+  const {shippingInfo,cartItems,subtotal,tax,total,shippingCharges,discount} = useSelector(
+    (state:{cartReducer:CartReducerInitialState})=>state.cartReducer);
+
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [newOrder] = useNewOrderMutation();
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!stripe || !elements) {
-      return;
-    }
+    if (!stripe || !elements) return;
+
     setIsProcessing(true);
+
+    const orderData:NewOrderRequest = {
+      shippingInfo,
+      orderItems:cartItems,
+      subtotal,
+      tax,
+      discount,
+      shippingCharges,
+      total,
+      user:user?._id!
+    }
 
     const { paymentIntent, error } = await stripe.confirmPayment({
       elements,
@@ -36,10 +61,12 @@ const CheckOutForm = () => {
         return toast.error(error.message || "Something went wrong");
     } 
     if(paymentIntent.status === "succeeded"){
-        console.log("placing order")
-        navigate("/orders");
-        setIsProcessing(false);
-    }
+        console.log("placing order");
+        const res = await newOrder(orderData);
+        dispatch(resetCart());
+        responseToast(res,navigate,"/orders");
+      }
+      setIsProcessing(false);
   };
   return (
     <div className="checkout-container">
