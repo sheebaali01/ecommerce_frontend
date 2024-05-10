@@ -1,29 +1,28 @@
-import AdminSidebar from "../../components/admin/admin-sidebar";
+import { BiMaleFemale } from "react-icons/bi";
 import { BsSearch } from "react-icons/bs";
 import { FaRegBell } from "react-icons/fa";
-import userImg from "../../assets/userpic.png";
 import { HiTrendingDown, HiTrendingUp } from "react-icons/hi";
-import data from "../../assets/data.json";
-import { BarChart, DoughnutChart } from "../../components/admin/charts";
-import { BiMaleFemale } from "react-icons/bi";
-import Table from "../../components/admin/dashboard-table";
 import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import { useStatsQuery } from "../../redux/api/dashboardAPI";
-import { CustomError } from "../../types/api-types";
-import toast from "react-hot-toast";
+import userImg from "../../assets/userpic.png";
+import AdminSidebar from "../../components/admin/admin-sidebar";
+import { BarChart, DoughnutChart } from "../../components/admin/charts";
+import Table from "../../components/admin/dashboard-table";
 import { Skeleton } from "../../components/loader";
+import { useStatsQuery } from "../../redux/api/dashboardAPI";
+import { RootState } from "../../redux/store";
+import { Navigate } from "react-router-dom";
 
 const Dashboard = () => {
   const { user } = useSelector((state: RootState) => state.userReducer);
-  const { data, isLoading, isError, error } = useStatsQuery(user?._id!);
+  const { data, isLoading, isError } = useStatsQuery(user?._id!);
   const stats = data?.stats!;
 
-  if (isError) {
-    const err = error as CustomError;
-    toast.error(err.data.message);
-  }
-
+  // if (isError) {
+  //   const err = error as CustomError;
+  //   toast.error(err.data.message);
+  // }
+  if (isError) return <Navigate to={"/"} />;
+  
   return (
     <div className="admin-container">
       <AdminSidebar />
@@ -36,7 +35,7 @@ const Dashboard = () => {
               <BsSearch />
               <input type="text" placeholder="Search for data,users,docs" />
               <FaRegBell />
-              <img src={userImg} alt="User" />
+              <img src={user?.photo || userImg} alt="User" />
             </div>
             <section className="widget-container">
               <WidgetItem
@@ -47,19 +46,19 @@ const Dashboard = () => {
                 color="rgb(0,115,255)"
               />
               <WidgetItem
-                percent={-14}
+                percent={stats.changePercent.user}
                 value={stats.count.user}
                 heading="User"
                 color="rgb(0,198,202)"
               />
               <WidgetItem
-                percent={80}
+                percent={stats.changePercent.order}
                 value={stats.count.order}
                 heading="Transactions"
                 color="rgb(255,196,0)"
               />
               <WidgetItem
-                percent={30}
+                percent={stats.changePercent.product}
                 value={stats.count.product}
                 heading="Products"
                 color="rgb(76,0,255)"
@@ -70,8 +69,8 @@ const Dashboard = () => {
                 <h2>Revenue & Transaction</h2>
                 {/*Graph*/}
                 <BarChart
-                  data_1={[300, 144, 433, 655, 237, 755, 190]}
-                  data_2={[200, 444, 343, 556, 778, 455, 990]}
+                  data_1={stats.chart.revenue}
+                  data_2={stats.chart.order}
                   title_1="Revenue"
                   title_2="Transaction"
                   bgColor_1="rgb(0,155,255)"
@@ -101,7 +100,7 @@ const Dashboard = () => {
 
                 <DoughnutChart
                   labels={["Female", "Male"]}
-                  data={[12, 19]}
+                  data={[stats.userRatio.female, stats.userRatio.male]}
                   backgroundColor={["hsl(340,82%,56%)", "rgba(53,162,235,0.8)"]}
                   cutout={90}
                 />
@@ -138,11 +137,11 @@ const WidgetItem = ({
       <h4>{amount ? `$${value}` : value}</h4>
       {percent > 0 ? (
         <span className="green">
-          <HiTrendingUp /> + {percent}%{" "}
+          <HiTrendingUp /> + {`${percent >10000 ? 9999 :percent}`}
         </span>
       ) : (
         <span className="red">
-          <HiTrendingDown /> {percent}%{" "}
+          <HiTrendingDown /> {`${percent > -10000 ? -9999 :percent}`}
         </span>
       )}
     </div>
@@ -155,7 +154,10 @@ const WidgetItem = ({
             )`,
       }}
     >
-      <span style={{ color }}>{percent}%</span>
+      <span style={{ color }}>
+        {percent >0 && `${percent >10000 ? 9999 :percent}%`}
+        {percent <0 && `${percent > -10000 ? -9999 :percent}%`}
+      </span>
     </div>
   </article>
 );
